@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+
+  events       Event[]
+  notes        Note[]
+  transactions Transaction[]
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  isAllDay    Boolean  @default(false)
+  color       String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Note {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  title           String
+  contentMarkdown String?
+  isPinned        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks Task[]
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  noteId      Int?
+  content     String
+  isCompleted Boolean   @default(false)
+  dueDate     DateTime?
+
+  note Note? @relation(fields: [noteId], references: [id], onDelete: SetNull)
+}
+
+model Category {
+  id    Int             @id @default(autoincrement())
+  name  String
+  type  TransactionType
+  icon  String?
+  color String?
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id              Int             @id @default(autoincrement())
+  userId          Int
+  amount          Float
+  type            TransactionType
+  categoryId      Int
+  date            DateTime
+  description     String?
+  receiptImageUrl String?
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
