@@ -10,13 +10,15 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String?
-  createdAt DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  password     String
+  name         String?
+  refreshToken String?
+  createdAt    DateTime @default(now())
 
   events       Event[]
+  eventCategories EventCategory[]
   notes        Note[]
   transactions Transaction[]
 }
@@ -26,12 +28,25 @@ model Event {
   userId      Int
   title       String
   description String?
+  location    String?
   startTime   DateTime
   endTime     DateTime
   isAllDay    Boolean  @default(false)
   color       String?
+  categoryId  Int?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category EventCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+}
+
+model EventCategory {
+  id     Int     @id @default(autoincrement())
+  userId Int
+  name   String
+  color  String?
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events Event[]
 }
 
 model Note {

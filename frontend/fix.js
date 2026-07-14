@@ -1,0 +1,1 @@
+﻿const fs = require('fs'); let c = fs.readFileSync('src/app/calendar/page.tsx', 'utf8'); c = c.replace(/K.*<div className="flex flex-col gap-3">/, 'Kéo thả sự kiện hoặc bấm vào lịch để thêm mới\n            </p>\n\n            <div className="flex flex-col gap-3">'); c = c.replace(/setDraggedEvent\(null\);\n\s*try \{/, 'try {'); fs.writeFileSync('src/app/calendar/page.tsx', c);

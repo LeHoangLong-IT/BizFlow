@@ -1,0 +1,1 @@
+﻿const fs = require('fs'); let c = fs.readFileSync('src/app/calendar/page.tsx', 'utf8'); c = c.replace(/\s*\/\/\s*Clear draggedEvent immediately.*?\n\s*setDraggedEvent\(null\);/s, ''); fs.writeFileSync('src/app/calendar/page.tsx', c);

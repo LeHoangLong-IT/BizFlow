@@ -1,0 +1,15 @@
+.event-detail-modal .ant-modal-content,
+.event-edit-modal .ant-modal-content {
+  padding: 0 !important;
+  overflow: hidden !important;
+  border-radius: 12px !important;
+}
+
+.ant-modal-container {
+  padding: 0 !important;
+}
+
+.ant-picker-separator {
+  white-space: nowrap !important;
+  padding: 0 4px !important;
+}

@@ -1,3 +1,23 @@
 .agents/
 Productivity_Management_System_(PMS)_plan
 Phân Quyền_Màn Hình
+
+# Standard ignores
+node_modules/
+.env
+.env.*
+.DS_Store
+*.log
+.vscode/
+
+# Frontend
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/node_modules/
+
+# Backend
+backend/dist/
+backend/node_modules/
+backend/build/
+backend/.env
