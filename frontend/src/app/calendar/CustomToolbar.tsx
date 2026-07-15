@@ -16,14 +16,39 @@ const CustomToolbar = (toolbar: any) => {
   };
 
   const label = () => {
-    const date = toolbar.date;
+    const date = new Date(toolbar.date);
+    const view = toolbar.view;
     const year = date.getFullYear();
-    const month = date.toLocaleString('vi-VN', { month: 'long' });
-    return `${month} ${year}`.toUpperCase();
+    const monthStr = date.toLocaleString('vi-VN', { month: 'long' });
+
+    if (view === 'day') {
+      let weekday = date.toLocaleString('vi-VN', { weekday: 'long' });
+      weekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+      return `${weekday}, ${date.getDate()} ${monthStr} ${year}`.toUpperCase();
+    }
+
+    if (view === 'week') {
+      const start = new Date(date);
+      start.setDate(start.getDate() - start.getDay());
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+
+      const startMonthStr = start.toLocaleString('vi-VN', { month: 'long' });
+      const endMonthStr = end.toLocaleString('vi-VN', { month: 'long' });
+
+      if (start.getFullYear() !== end.getFullYear()) {
+        return `${start.getDate()} ${startMonthStr} ${start.getFullYear()} - ${end.getDate()} ${endMonthStr} ${end.getFullYear()}`.toUpperCase();
+      } else if (start.getMonth() !== end.getMonth()) {
+        return `${start.getDate()} ${startMonthStr} - ${end.getDate()} ${endMonthStr} ${end.getFullYear()}`.toUpperCase();
+      } else {
+        return `${start.getDate()} - ${end.getDate()} ${startMonthStr} ${year}`.toUpperCase();
+      }
+    }
+
+    return `${monthStr} ${year}`.toUpperCase();
   };
 
   const views = [
-    { id: 'year', label: 'Năm' },
     { id: 'month', label: 'Tháng' },
     { id: 'week', label: 'Tuần' },
     { id: 'day', label: 'Ngày' },
@@ -58,8 +83,8 @@ const CustomToolbar = (toolbar: any) => {
               key={v.id}
               onClick={() => toolbar.onView(v.id === 'list' ? 'agenda' : v.id)}
               className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all border-none outline-none cursor-pointer whitespace-nowrap ${isActive
-                  ? 'bg-white text-[#3b5998] shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-white/60'
+                ? 'bg-white text-[#3b5998] shadow-sm'
+                : 'text-gray-500 hover:text-gray-700 hover:bg-white/60'
                 }`}
             >
               {v.label}

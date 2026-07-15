@@ -87,8 +87,9 @@ export default function EventCategoryManageModal({ isOpen, onClose }: EventCateg
       footer={null}
       closable={false}
       width={480}
-      styles={{ body: { padding: 0 }, content: { padding: 0, overflow: 'hidden', borderRadius: '12px' } }}
+      styles={{ body: { padding: 0 } }}
       destroyOnHidden
+      className="overflow-hidden rounded-xl"
     >
       <div className="bg-white p-5 flex justify-between items-center relative border-b border-gray-100 rounded-t-xl">
         <h2 className="text-[1.25rem] font-bold text-gray-800 m-0 tracking-tight">Quản lý Loại Sự Kiện</h2>

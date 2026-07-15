@@ -38,7 +38,7 @@ export default function EventDetailModal({ isOpen, onClose, eventData, onEdit, o
       closable={false}
       width={450}
       className="event-detail-modal"
-      styles={{ body: { padding: 0 }, content: { padding: 0, overflow: 'hidden', borderRadius: '12px' } }}
+      styles={{ body: { padding: 0 } }}
     >
       <div className="bg-white p-5 flex justify-between items-center relative border-b border-gray-100 rounded-t-xl">
         <h2 className="text-[1.25rem] font-bold text-gray-800 m-0 pr-8 tracking-tight">{eventData.title}</h2>

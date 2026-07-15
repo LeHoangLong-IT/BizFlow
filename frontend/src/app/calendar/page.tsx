@@ -12,6 +12,7 @@ import EventModal from './EventModal';
 import EventDetailModal from './EventDetailModal';
 import EventCategoryManageModal from './EventCategoryManageModal';
 import CustomToolbar from './CustomToolbar';
+import CustomAgendaView from './CustomAgendaView';
 import { SettingOutlined } from '@ant-design/icons';
 import './modal-override.css';
 
@@ -242,9 +243,9 @@ export default function CalendarPage() {
           </div>
         </aside >
 
-        <main className="flex-1 bg-white p-4 xl:p-8 py-3 rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[600px] xl:h-[calc(100vh-140px)] xl:max-h-[900px] overflow-hidden relative min-w-0 mb-10 xl:mb-0 max-w-full box-border">
+        <main className="flex-1 bg-white px-4 py-3 rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[750px] xl:min-h-[650px] xl:h-[calc(100vh-80px)] xl:max-h-[900px] overflow-hidden relative min-w-0 mb-10 xl:mb-0 max-w-full box-border">
           <div className="flex-1 overflow-x-auto overflow-y-hidden h-full w-full min-w-0">
-            <div className="w-full xl:min-w-[800px] h-full pr-2 min-w-0">
+            <div className="w-full xl:min-w-[800px] h-full min-w-0">
               {loading ? (
                 <div className="flex-1 flex justify-center items-center"><Spin size="large" /></div>
               ) : (
@@ -252,14 +253,36 @@ export default function CalendarPage() {
                   key={calendarKey}
                   localizer={localizer}
                   events={events}
-                  startAccessor="start"
-                  endAccessor="end"
+                  formats={{
+                    dayFormat: (date: Date) => {
+                      let weekday = date.toLocaleString('vi-VN', { weekday: 'long' });
+                      weekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+                      return `${weekday} ${date.getDate()}/${date.getMonth() + 1}`;
+                    },
+                    dayHeaderFormat: (date: Date) => {
+                      let weekday = date.toLocaleString('vi-VN', { weekday: 'long' });
+                      weekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+                      return weekday;
+                    }
+                  }}
+                  messages={{
+                    allDay: 'Cả ngày'
+                  }}
+                  startAccessor={(event: any) => new Date(event.start)}
+                  endAccessor={(event: any) => new Date(event.end)}
                   style={{ height: '100%' }}
                   selectable
                   date={date}
                   onNavigate={(newDate) => setDate(newDate)}
                   view={view as any}
                   onView={(newView) => setView(newView)}
+                  popup={true}
+                  views={{
+                    month: true,
+                    week: true,
+                    day: true,
+                    agenda: CustomAgendaView as any,
+                  }}
                   onSelectSlot={handleSelectSlot}
                   onSelectEvent={handleSelectEvent}
                   onEventDrop={onEventDrop}
@@ -268,7 +291,12 @@ export default function CalendarPage() {
                   resizable={false}
                   eventPropGetter={eventStyleGetter}
                   components={{
-                    toolbar: CustomToolbar
+                    toolbar: CustomToolbar,
+                    timeGutterHeader: () => (
+                      <div className="flex items-center justify-center h-full w-full font-medium text-gray-500 text-xs py-2">
+                        Cả ngày
+                      </div>
+                    )
                   }}
                   className="custom-calendar font-sans flex-1 text-sm"
                 />

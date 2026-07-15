@@ -98,7 +98,7 @@ export default function EventModal({ isOpen, onClose, eventData, onSuccess }: Ev
         closable={false}
         width={480}
         className="event-edit-modal"
-        styles={{ body: { padding: 0 }, content: { padding: 0, overflow: 'hidden', borderRadius: '12px' } }}
+        styles={{ body: { padding: 0 } }}
         destroyOnHidden
       >
         <div className="bg-white p-5 flex justify-between items-center relative border-b border-gray-100 rounded-t-xl">

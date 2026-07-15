@@ -10,7 +10,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-oswald: var(--font-oswald);
-  
+
   --color-primary: #1E40AF;
   --color-secondary: #10B981;
   --color-accent: #EF4444;
@@ -33,6 +33,7 @@ body {
   position: relative !important;
   z-index: 50 !important;
 }
+
 .rbc-toolbar button {
   cursor: pointer !important;
   position: relative;
@@ -47,32 +48,68 @@ body {
   border-radius: 8px;
   background: white;
 }
+
 .custom-calendar .rbc-header {
   padding: 12px 0;
   font-weight: 700;
   color: #1e293b;
   border-bottom: 1px solid #e2e8f0;
   font-size: 0.9rem;
+  position: relative;
+  z-index: 10;
 }
+
+/* Hide scrollbar in the time grid */
+.custom-calendar .rbc-time-content::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-calendar .rbc-time-content {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.rbc-calendar .rbc-time-view .rbc-time-header.rbc-overflowing {
+  margin-right: unset !important;
+  border: 0 !important;
+}
+
 .custom-calendar .rbc-month-row {
   border-top: 1px solid #e2e8f0;
 }
-.custom-calendar .rbc-day-bg + .rbc-day-bg,
-.custom-calendar .rbc-header + .rbc-header {
+
+.custom-calendar .rbc-day-bg+.rbc-day-bg,
+.custom-calendar .rbc-header+.rbc-header {
   border-left: 1px solid #e2e8f0;
 }
-.custom-calendar .rbc-today {
-  background-color: transparent !important;
+
+.rbc-time-view .rbc-allday-cell {
+  height: unset !important;
 }
+
+.custom-calendar .rbc-today {
+  background-color: #eef2f6 !important;
+}
+
 .custom-calendar .rbc-date-cell {
   padding: 8px;
   font-weight: 500;
   color: #475569;
+  /* line-height: 28px; */
+
 }
+
 .custom-calendar .rbc-date-cell.rbc-now {
   font-weight: bold;
 }
-.custom-calendar .rbc-date-cell.rbc-now > button {
+
+.rbc-date-cell.rbc-now.rbc-current>button {
+  margin-right: -5px !important;
+}
+
+.custom-calendar .rbc-date-cell.rbc-now>button {
   background: #3b5998;
   color: white;
   width: 28px;
@@ -82,6 +119,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+
 .custom-calendar .rbc-event {
   background-color: transparent;
   padding: 2px 4px;
