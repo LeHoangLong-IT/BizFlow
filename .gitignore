@@ -21,3 +21,9 @@ backend/dist/
 backend/node_modules/
 backend/build/
 backend/.env
+
+# Deployments
+deploy_packages/
+!.agents/deploy/deploy.js
+
+frontend/out.zip

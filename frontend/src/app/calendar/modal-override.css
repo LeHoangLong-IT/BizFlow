@@ -13,3 +13,41 @@
   white-space: nowrap !important;
   padding: 0 4px !important;
 }
+
+/* Ẩn nội dung chữ của sự kiện ma (không dùng display:none) */
+.rbc-addons-dnd-drag-preview {
+  color: transparent !important;
+  border: none !important;
+  opacity: 1 !important;
+  background-color: transparent !important;
+}
+.rbc-addons-dnd-drag-preview .rbc-event-content {
+  display: none !important;
+}
+
+/* 
+  HACK MỞ RỘNG BÓNG MA (Cho Month View):
+  Vì rbc-month-row có overflow: hidden, ta có thể dùng ::before 
+  có chiều cao khổng lồ để lấp đầy toàn bộ ô lịch theo chiều dọc,
+  còn chiều ngang đã được thư viện tự động căn chỉnh đúng cột. 
+*/
+.rbc-month-view .rbc-addons-dnd-drag-preview {
+  overflow: visible !important;
+  position: relative !important;
+}
+.rbc-month-view .rbc-addons-dnd-drag-preview::before {
+  content: "";
+  position: absolute;
+  top: -500px;
+  bottom: -500px;
+  left: 0;
+  right: 0;
+  background-color: #e5e5e5 !important;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Cho Week/Day View: Bóng ma vốn dĩ đã có kích thước đúng, chỉ cần tô màu nền */
+.rbc-time-view .rbc-addons-dnd-drag-preview {
+  background-color: #e5e5e5 !important;
+}
