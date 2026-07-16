@@ -287,9 +287,9 @@ export default function CalendarPage() {
           </div>
         </aside >
 
-        <main className="flex-1 bg-white px-4 py-3 rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[750px] xl:min-h-[650px] xl:h-[calc(100vh-80px)] xl:max-h-[900px] overflow-hidden relative min-w-0 mb-10 xl:mb-0 max-w-full box-border">
-          <div className="flex-1 overflow-x-auto overflow-y-hidden h-full w-full min-w-0">
-            <div className="w-full xl:min-w-[800px] h-full min-w-0">
+        <main className="flex-1 bg-white px-4 py-3 rounded-xl shadow-sm border border-gray-100 flex flex-col  xl:h-[calc(100vh-80px)] xl:max-h-[900px] overflow-hidden relative min-w-0 mb-10 xl:mb-0 max-w-full box-border">
+          <div className="flex-1 overflow-x-auto overflow-y-hidden h-full w-full min-w-0 flex flex-col">
+            <div className="w-full min-w-[800px] h-full min-h-[750px] xl:min-h-[650px] flex flex-col">
               {loading ? (
                 <div className="flex-1 flex justify-center items-center"><Spin size="large" /></div>
               ) : (
@@ -320,7 +320,10 @@ export default function CalendarPage() {
                   onNavigate={(newDate) => setDate(newDate)}
                   view={view as any}
                   onView={(newView) => setView(newView)}
-                  popup={true}
+                  onDrillDown={(date) => {
+                    setDate(date);
+                    setView('day');
+                  }}
                   views={{
                     month: true,
                     week: true,

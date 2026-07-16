@@ -31,6 +31,7 @@ export const metadata: Metadata = {
 };
 
 import GlobalHeader from "@/components/GlobalHeader";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -41,10 +42,13 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${mulish.variable} ${oswald.variable} h-full antialiased font-sans`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
-        <GlobalHeader />
-        {children}
+      <body className="min-h-full flex flex-col dark:bg-gray-900 transition-colors">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          <GlobalHeader />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
