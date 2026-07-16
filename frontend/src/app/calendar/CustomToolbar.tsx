@@ -56,26 +56,26 @@ const CustomToolbar = (toolbar: any) => {
   ];
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4 mt-2 bg-white rounded-lg z-50 relative rbc-custom-toolbar">
+    <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4 mt-2 bg-white dark:bg-transparent rounded-lg z-50 relative rbc-custom-toolbar">
       <div className="flex items-center gap-1 w-full md:w-auto justify-center md:justify-start">
-        <div className="flex bg-[#f1f5f9] rounded-lg p-1 shadow-inner border border-gray-100">
-          <button onClick={goToBack} className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-white hover:text-[#3b5998] hover:shadow-sm rounded-md transition-all border-none outline-none cursor-pointer">
+        <div className="flex bg-[#f1f5f9] dark:bg-gray-700 rounded-lg p-1 shadow-inner border border-gray-100 dark:border-gray-600">
+          <button onClick={goToBack} className="w-8 h-8 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-600 hover:text-[#3b5998] dark:hover:text-blue-400 hover:shadow-sm rounded-md transition-all border-none outline-none cursor-pointer">
             <LeftOutlined className="text-xs" />
           </button>
-          <button onClick={goToNext} className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-white hover:text-[#3b5998] hover:shadow-sm rounded-md transition-all border-none outline-none cursor-pointer">
+          <button onClick={goToNext} className="w-8 h-8 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-600 hover:text-[#3b5998] dark:hover:text-blue-400 hover:shadow-sm rounded-md transition-all border-none outline-none cursor-pointer">
             <RightOutlined className="text-xs" />
           </button>
         </div>
-        <button onClick={goToCurrent} className="px-5 h-[40px] bg-white border border-gray-200 text-gray-600 font-medium rounded-lg hover:bg-gray-50 hover:text-[#3b5998] hover:border-[#3b5998]/30 transition-all ml-3 shadow-sm outline-none cursor-pointer">
+        <button onClick={goToCurrent} className="px-5 h-[40px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-[#3b5998] dark:hover:text-blue-400 hover:border-[#3b5998]/30 transition-all ml-3 shadow-sm outline-none cursor-pointer">
           Hôm nay
         </button>
       </div>
 
-      <div className="text-lg font-bold text-gray-800 tracking-wide font-oswald uppercase text-center w-full md:w-auto">
+      <div className="text-lg font-bold text-gray-800 dark:text-white tracking-wide font-oswald uppercase text-center w-full md:w-auto">
         {label()}
       </div>
 
-      <div className="flex bg-[#f1f5f9] rounded-lg p-1 shadow-inner border border-gray-100 w-full md:w-auto overflow-x-auto justify-start md:justify-end">
+      <div className="flex bg-[#f1f5f9] dark:bg-gray-700 rounded-lg p-1 shadow-inner border border-gray-100 dark:border-gray-600 w-full md:w-auto overflow-x-auto justify-start md:justify-end">
         {views.map(v => {
           const isActive = toolbar.view === v.id || (toolbar.view === 'agenda' && v.id === 'list');
           return (
@@ -83,8 +83,8 @@ const CustomToolbar = (toolbar: any) => {
               key={v.id}
               onClick={() => toolbar.onView(v.id === 'list' ? 'agenda' : v.id)}
               className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all border-none outline-none cursor-pointer whitespace-nowrap ${isActive
-                ? 'bg-white text-[#3b5998] shadow-sm'
-                : 'text-gray-500 hover:text-gray-700 hover:bg-white/60'
+                ? 'bg-white dark:bg-gray-800 text-[#3b5998] dark:text-blue-400 shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-white/60 dark:hover:bg-gray-600'
                 }`}
             >
               {v.label}

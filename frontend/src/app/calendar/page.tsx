@@ -172,18 +172,18 @@ export default function CalendarPage() {
     .slice(0, 5);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f3f3f9] w-full min-w-0">
-      <header className="bg-white shadow-sm px-6 py-3 flex justify-between items-center z-10 border-b border-gray-100 relative min-w-0">
-        <h1 className="text-[1.1rem] font-bold text-gray-800 tracking-tight font-oswald uppercase truncate">LỊCH CÁ NHÂN</h1>
+    <div className="min-h-screen flex flex-col bg-[#f3f3f9] dark:bg-gray-900 w-full min-w-0">
+      <header className="bg-white dark:bg-gray-800 shadow-sm px-6 py-3 flex justify-between items-center z-10 border-b border-gray-100 dark:border-gray-700 relative min-w-0">
+        <h1 className="text-[1.1rem] font-bold text-gray-800 dark:text-white tracking-tight font-oswald uppercase truncate">LỊCH CÁ NHÂN</h1>
         <div className="flex gap-4 items-center min-w-0">
-          <span className="text-sm text-gray-500 font-medium truncate">Ứng dụng {'>'} <span className="text-gray-400">Lịch trình</span></span>
+          <span className="text-sm text-gray-500 dark:text-gray-400 font-medium truncate">Ứng dụng {'>'} <span className="text-gray-400 dark:text-gray-500">Lịch trình</span></span>
         </div>
       </header>
 
       <div className="flex-1 flex flex-col xl:flex-row px-4 xl:px-8 py-6 gap-6 relative z-0 max-w-[1600px] w-full mx-auto min-w-0 box-border">
         <aside className="w-full xl:w-[300px] flex-shrink-0 flex flex-col xl:pr-2 xl:pb-10 min-w-0 max-w-full">
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
             <button
               onClick={() => { setSelectedEvent(null); setIsModalOpen(true); }}
               className="w-full bg-[#3b5998] hover:bg-[#2d4373] text-white py-3 rounded-md font-medium transition-colors shadow-md mb-6"
@@ -191,7 +191,7 @@ export default function CalendarPage() {
               + Tạo Sự Kiện Mới
             </button>
 
-            <p className="text-gray-500 text-sm mb-4 leading-relaxed">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 leading-relaxed">
               Kéo thả sự kiện hoặc bấm vào lịch để thêm mới
             </p>
 
@@ -202,8 +202,8 @@ export default function CalendarPage() {
                   draggable={true}
                   onDragStart={() => handleDragStart(cat.name, cat.color, cat.id)}
                   onDragEnd={() => setDraggedEvent(null)}
-                  className="flex items-center gap-3 px-4 py-2 rounded-md cursor-pointer hover:opacity-90 active:cursor-grabbing min-w-0 bg-opacity-10"
-                  style={{ backgroundColor: `${cat.color}15`, color: cat.color }}
+                  className="flex items-center gap-3 px-4 py-2 rounded-md cursor-pointer hover:opacity-90 active:cursor-grabbing min-w-0 text-gray-700 dark:text-gray-200"
+                  style={{ backgroundColor: `${cat.color}15` }}
                 >
                   <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }}></div>
                   <span className="font-medium text-sm truncate">{cat.name}</span>
@@ -212,7 +212,7 @@ export default function CalendarPage() {
             </div>
             <button
               onClick={() => setIsManageCategoryOpen(true)}
-              className="mt-4 w-full text-center text-sm font-medium text-gray-500 hover:text-gray-700 flex items-center justify-center gap-2 cursor-pointer bg-transparent border-none outline-none py-2 hover:bg-gray-50 rounded-md transition-colors"
+              className="mt-4 w-full text-center text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 flex items-center justify-center gap-2 cursor-pointer bg-transparent border-none outline-none py-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
             >
               <SettingOutlined /> Quản lý danh mục
             </button>
@@ -220,19 +220,19 @@ export default function CalendarPage() {
 
           <div className="mt-8">
             <div className="flex items-center justify-between mb-1">
-              <h2 className="text-[1.05rem] font-bold text-[#3b5998] flex items-center gap-2">
+              <h2 className="text-[1.05rem] font-bold text-[#3b5998] dark:text-blue-400 flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
                 Sự kiện sắp tới
               </h2>
               {upcomingEvents.length > 0 && (
-                <span className="bg-blue-100 text-[#3b5998] text-xs font-bold px-2.5 py-0.5 rounded-full">
+                <span className="bg-blue-100 dark:bg-blue-900/40 text-[#3b5998] dark:text-blue-400 text-xs font-bold px-2.5 py-0.5 rounded-full">
                   {upcomingEvents.length}
                 </span>
               )}
             </div>
-            <p className="text-gray-400 text-[13px] mb-4 leading-relaxed">
+            <p className="text-gray-400 dark:text-gray-500 text-[13px] mb-4 leading-relaxed">
               {upcomingEvents.length === 0
                 ? 'Thời gian tới chưa có lịch trình nào, bạn có thể thảnh thơi nghỉ ngơi!'
                 : 'Đừng bỏ lỡ các lịch trình quan trọng của bạn'}
@@ -247,18 +247,18 @@ export default function CalendarPage() {
                   return (
                     <div
                       key={evt.id}
-                      className="group p-3 rounded-lg bg-white border border-gray-200 hover:border-blue-200 shadow-sm hover:shadow-[0_4px_12px_-4px_rgba(59,89,152,0.15)] transition-all duration-200 cursor-pointer relative overflow-hidden flex flex-col gap-2"
+                      className="group p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-500 shadow-sm hover:shadow-[0_4px_12px_-4px_rgba(59,89,152,0.15)] transition-all duration-200 cursor-pointer relative overflow-hidden flex flex-col gap-2"
                       onClick={() => handleSelectEvent(evt)}
                     >
                       {/* Left colored accent bar */}
                       <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: eventColor }}></div>
 
                       <div className="ml-1.5 flex flex-col gap-1.5">
-                        <h3 className="font-semibold text-gray-800 text-[13px] leading-tight truncate group-hover:text-[#3b5998] transition-colors">{evt.title}</h3>
+                        <h3 className="font-semibold text-gray-800 dark:text-gray-200 text-[13px] leading-tight truncate group-hover:text-[#3b5998] dark:group-hover:text-blue-400 transition-colors">{evt.title}</h3>
 
-                        <div className="flex flex-wrap items-center text-[11px] text-gray-500 gap-y-1">
+                        <div className="flex flex-wrap items-center text-[11px] text-gray-500 dark:text-gray-400 gap-y-1">
                           <div className="flex items-center gap-1">
-                            <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                             <span>{dayjs(evt.start).format('DD/MM/YYYY')}</span>
@@ -267,7 +267,7 @@ export default function CalendarPage() {
                           <span className="mx-1.5 text-gray-300">•</span>
 
                           <div className="flex items-center gap-1">
-                            <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span>
@@ -287,7 +287,7 @@ export default function CalendarPage() {
           </div>
         </aside >
 
-        <main className="flex-1 bg-white px-4 py-3 rounded-xl shadow-sm border border-gray-100 flex flex-col  xl:h-[calc(100vh-80px)] xl:max-h-[900px] overflow-hidden relative min-w-0 mb-10 xl:mb-0 max-w-full box-border">
+        <main className="flex-1 bg-white dark:bg-gray-800 px-4 py-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col  xl:h-[calc(100vh-80px)] xl:max-h-[900px] overflow-hidden relative min-w-0 mb-10 xl:mb-0 max-w-full box-border">
           <div className="flex-1 overflow-x-auto overflow-y-hidden h-full w-full min-w-0 flex flex-col">
             <div className="w-full min-w-[800px] h-full min-h-[750px] xl:min-h-[650px] flex flex-col">
               {loading ? (

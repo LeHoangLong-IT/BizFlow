@@ -44,7 +44,7 @@ export default function RootLayout({
       className={`${mulish.variable} ${oswald.variable} h-full antialiased font-sans`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col dark:bg-gray-900 transition-colors">
+      <body className="min-h-full flex flex-col bg-background text-foreground transition-colors">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <GlobalHeader />
           {children}

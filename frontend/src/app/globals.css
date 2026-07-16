@@ -136,3 +136,43 @@ body {
   background-color: transparent;
   padding: 2px 4px;
 }
+
+/* Dark mode overrides for Calendar */
+.dark .custom-calendar .rbc-month-view,
+.dark .custom-calendar .rbc-time-view,
+.dark .custom-calendar .rbc-agenda-view {
+  background: #1e293b;
+  border-color: #475569;
+}
+
+.dark .custom-calendar .rbc-header {
+  color: #f8fafc;
+  border-color: #475569;
+}
+
+.dark .custom-calendar .rbc-month-row,
+.dark .custom-calendar .rbc-day-bg + .rbc-day-bg,
+.dark .custom-calendar .rbc-header + .rbc-header,
+.dark .custom-calendar .rbc-timeslot-group,
+.dark .custom-calendar .rbc-time-content > * + * > *,
+.dark .custom-calendar .rbc-day-slot .rbc-time-slot,
+.dark .custom-calendar .rbc-time-header-content,
+.dark .custom-calendar .rbc-time-header,
+.dark .custom-calendar .rbc-time-content,
+.dark .custom-calendar .rbc-allday-cell,
+.dark .custom-calendar .rbc-time-gutter,
+.dark .custom-calendar .rbc-time-header-cell {
+  border-color: #475569;
+}
+
+.dark .custom-calendar .rbc-today {
+  background-color: #334155 !important;
+}
+
+.dark .custom-calendar .rbc-date-cell {
+  color: #cbd5e1;
+}
+
+.dark .custom-calendar .rbc-off-range-bg {
+  background: #0f172a;
+}

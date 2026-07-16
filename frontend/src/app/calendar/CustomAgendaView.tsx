@@ -28,7 +28,7 @@ const CustomAgendaView = ({ events, date, length = 30, localizer }: any) => {
 
   if (dates.length === 0) {
     return (
-      <div className="p-8 text-center text-gray-500 bg-white min-h-[400px] flex items-center justify-center">
+      <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 min-h-[400px] flex items-center justify-center">
         Không có sự kiện nào trong khoảng thời gian này
       </div>
     );
@@ -58,7 +58,7 @@ const CustomAgendaView = ({ events, date, length = 30, localizer }: any) => {
   };
 
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-gray-800">
       {dates.map(day => {
         const dayEvents = groupedEvents[day];
         const mDate = moment(day);
@@ -72,9 +72,9 @@ const CustomAgendaView = ({ events, date, length = 30, localizer }: any) => {
         return (
           <div key={day} className="mb-0">
             {/* Date Header */}
-            <div className="flex justify-between items-center py-3 px-4 border-b-2 border-gray-100 bg-white font-bold text-gray-700">
+            <div className="flex justify-between items-center py-3 px-4 border-b-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 font-bold text-gray-700 dark:text-gray-200">
               <span className="text-sm">{dateStr}</span>
-              <span className="text-sm text-gray-500">{weekday}</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">{weekday}</span>
             </div>
 
             {/* Events List */}
@@ -92,11 +92,11 @@ const CustomAgendaView = ({ events, date, length = 30, localizer }: any) => {
                 return (
                   <div
                     key={`${day}-${index}`}
-                    className="flex items-center py-3 px-4 border-b border-gray-50"
+                    className="flex items-center py-3 px-4 border-b border-gray-50 dark:border-gray-700/50"
                     style={{ backgroundColor: bgColor }}
                   >
                     {/* Time */}
-                    <div className="w-[150px] text-sm text-gray-500 font-medium whitespace-nowrap">
+                    <div className="w-[150px] text-sm text-gray-500 dark:text-gray-300 font-medium whitespace-nowrap">
                       {timeStr}
                     </div>
 
@@ -109,7 +109,7 @@ const CustomAgendaView = ({ events, date, length = 30, localizer }: any) => {
                     </div>
 
                     {/* Title */}
-                    <div className="flex-1 text-sm font-medium text-[#3b5998]">
+                    <div className="flex-1 text-sm font-medium text-[#3b5998] dark:text-blue-400">
                       {event.title}
                     </div>
                   </div>
