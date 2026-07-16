@@ -19,6 +19,12 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    
+    // Nếu là lỗi 401 từ API login thì không tự động redirect, để cho form Login tự báo lỗi
+    if (originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/register')) {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {

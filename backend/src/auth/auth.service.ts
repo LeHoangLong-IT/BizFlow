@@ -30,12 +30,12 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const user = await this.usersService.findOne(loginDto.email);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Email hoặc mật khẩu không chính xác');
     }
 
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Email hoặc mật khẩu không chính xác');
     }
 
     return this.generateTokens(user.id, user.email);

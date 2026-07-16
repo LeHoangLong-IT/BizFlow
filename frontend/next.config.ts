@@ -8,6 +8,8 @@ const withPWA = require("next-pwa")({
 });
 
 const nextConfig: NextConfig = {
+  output: 'export',
+  trailingSlash: true,
   turbopack: {}
 };
 

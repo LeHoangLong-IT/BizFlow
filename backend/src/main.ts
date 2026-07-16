@@ -3,7 +3,11 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors(); // Bật CORS để cho phép Frontend gọi API
+  app.enableCors({
+    origin: ['http://localhost:3000', 'https://bizflow.gamingsoul.vn'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  });
   await app.listen(process.env.PORT ?? 3001);
 }
 bootstrap();
