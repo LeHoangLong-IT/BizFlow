@@ -9,26 +9,38 @@ export class EventsService {
   async findAll(userId: number) {
     return this.prisma.event.findMany({ 
       where: { userId },
-      include: { category: true }
+      include: { tags: true, category: true }
     });
   }
 
-  async create(userId: number, data: Omit<Prisma.EventUncheckedCreateInput, 'userId'>) {
+  async create(userId: number, data: any) {
+    const createData: any = { ...data, userId };
+    if (data.tagIds) {
+      createData.tags = {
+        connect: data.tagIds.map((id: number) => ({ id }))
+      };
+      delete createData.tagIds;
+    }
     return this.prisma.event.create({
-      data: {
-        ...data,
-        userId: userId,
-      },
+      data: createData,
     });
   }
 
-  async update(userId: number, id: number, data: Prisma.EventUncheckedUpdateInput) {
+  async update(userId: number, id: number, data: any) {
     const event = await this.prisma.event.findFirst({ where: { id, userId } });
     if (!event) throw new NotFoundException('Event not found');
 
+    const updateData: any = { ...data };
+    if (updateData.tagIds !== undefined) {
+      updateData.tags = {
+        set: updateData.tagIds.map((tid: number) => ({ id: tid }))
+      };
+      delete updateData.tagIds;
+    }
+
     return this.prisma.event.update({
       where: { id },
-      data,
+      data: updateData,
     });
   }
 

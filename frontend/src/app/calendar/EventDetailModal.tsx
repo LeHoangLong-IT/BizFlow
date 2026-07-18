@@ -3,6 +3,7 @@ import { Modal, Button, message } from 'antd';
 import { CalendarOutlined, ClockCircleOutlined, EnvironmentOutlined, MessageOutlined, CloseOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import api from '@/lib/axios';
+import { useRouter } from 'next/navigation';
 
 interface EventDetailModalProps {
   isOpen: boolean;
@@ -13,6 +14,8 @@ interface EventDetailModalProps {
 }
 
 export default function EventDetailModal({ isOpen, onClose, eventData, onEdit, onSuccess }: EventDetailModalProps) {
+  const router = useRouter();
+
   if (!eventData) return null;
 
   const handleDelete = async () => {
@@ -86,12 +89,21 @@ export default function EventDetailModal({ isOpen, onClose, eventData, onEdit, o
           >
             Xóa
           </button>
-          <button
-            onClick={onEdit}
-            className="bg-[#f0f5ff] text-[#2f54eb] border-none font-medium hover:bg-[#d6e4ff] h-[36px] px-6 rounded-md cursor-pointer transition-colors outline-none"
-          >
-            Chỉnh sửa
-          </button>
+          {eventData.sourceType === 'NOTE' || eventData.sourceType === 'TASK' ? (
+            <button
+              onClick={() => router.push('/notes')}
+              className="bg-[#f0f5ff] text-[#2f54eb] border-none font-medium hover:bg-[#d6e4ff] h-[36px] px-6 rounded-md cursor-pointer transition-colors outline-none"
+            >
+              Đi tới Ghi chú
+            </button>
+          ) : (
+            <button
+              onClick={onEdit}
+              className="bg-[#f0f5ff] text-[#2f54eb] border-none font-medium hover:bg-[#d6e4ff] h-[36px] px-6 rounded-md cursor-pointer transition-colors outline-none"
+            >
+              Chỉnh sửa
+            </button>
+          )}
         </div>
       </div>
     </Modal>

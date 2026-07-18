@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
+
 :root {
   --background: #F8FAFC;
   --foreground: #0F172A;
@@ -31,6 +32,7 @@ body {
   from {
     transform: translateX(-100%);
   }
+
   to {
     transform: translateX(0);
   }
@@ -151,10 +153,10 @@ body {
 }
 
 .dark .custom-calendar .rbc-month-row,
-.dark .custom-calendar .rbc-day-bg + .rbc-day-bg,
-.dark .custom-calendar .rbc-header + .rbc-header,
+.dark .custom-calendar .rbc-day-bg+.rbc-day-bg,
+.dark .custom-calendar .rbc-header+.rbc-header,
 .dark .custom-calendar .rbc-timeslot-group,
-.dark .custom-calendar .rbc-time-content > * + * > *,
+.dark .custom-calendar .rbc-time-content>*+*>*,
 .dark .custom-calendar .rbc-day-slot .rbc-time-slot,
 .dark .custom-calendar .rbc-time-header-content,
 .dark .custom-calendar .rbc-time-header,
@@ -175,4 +177,121 @@ body {
 
 .dark .custom-calendar .rbc-off-range-bg {
   background: #0f172a;
+}
+
+/* Quill Content View Mode Styles */
+.quill-content h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+}
+
+.quill-content h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+}
+
+.quill-content h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+}
+
+.quill-content p {
+  margin-bottom: 0.5em;
+}
+
+.quill-content ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.quill-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.quill-content blockquote {
+  border-left: 4px solid #ccc;
+  padding-left: 1em;
+  margin-left: 0;
+  font-style: italic;
+  color: #666;
+}
+
+.quill-content a {
+  color: #1a73e8;
+  text-decoration: underline;
+}
+
+.quill-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.quill-content,
+.quill-content * {
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  white-space: normal !important;
+}
+
+.quill-content pre,
+.quill-content pre * {
+  white-space: pre-wrap !important;
+  overflow-wrap: break-word !important;
+  overflow-x: auto !important;
+}
+
+/* Quill Alignment Styles */
+.quill-content .ql-align-center {
+  text-align: center;
+}
+
+.quill-content .ql-align-right {
+  text-align: right;
+}
+
+.quill-content .ql-align-justify {
+  text-align: justify;
+}
+
+/* Quill Indent Styles */
+.quill-content .ql-indent-1 {
+  padding-left: 3em;
+}
+
+.quill-content .ql-indent-2 {
+  padding-left: 6em;
+}
+
+.quill-content .ql-indent-3 {
+  padding-left: 9em;
+}
+
+.quill-content .ql-indent-4 {
+  padding-left: 12em;
+}
+
+.quill-content .ql-indent-5 {
+  padding-left: 15em;
+}
+
+.quill-content .ql-indent-6 {
+  padding-left: 18em;
+}
+
+.quill-content .ql-indent-7 {
+  padding-left: 21em;
+}
+
+.quill-content .ql-indent-8 {
+  padding-left: 24em;
 }

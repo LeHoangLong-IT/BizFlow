@@ -18,10 +18,24 @@ model User {
   refreshToken String?
   createdAt    DateTime @default(now())
 
-  events       Event[]
-  eventCategories EventCategory[]
-  notes        Note[]
-  transactions Transaction[]
+  events         Event[]
+  tags           Tag[]
+  itemCategories ItemCategory[]
+  notes          Note[]
+  tasks          Task[]
+  transactions   Transaction[]
+}
+
+model ItemCategory {
+  id     Int     @id @default(autoincrement())
+  userId Int
+  name   String
+  color  String?
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events Event[]
+  notes  Note[]
+  tasks  Task[]
 }
 
 model Event {
@@ -35,12 +49,18 @@ model Event {
   isAllDay    Boolean  @default(false)
   color       String?
   categoryId  Int?
+  sourceType  String?  // 'NOTE' or 'TASK'
+  sourceId    Int?
+  recurrenceRule String?
 
   user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category EventCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  category ItemCategory?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags     Tag[]
+  note     Note?          @relation("NoteEvent")
+  task     Task?          @relation("TaskEvent")
 }
 
-model EventCategory {
+model Tag {
   id     Int     @id @default(autoincrement())
   userId Int
   name   String
@@ -48,29 +68,63 @@ model EventCategory {
 
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   events Event[]
+  notes  Note[]
+  tasks  Task[]
 }
 
 model Note {
   id              Int      @id @default(autoincrement())
   userId          Int
   title           String
-  contentMarkdown String?
+  contentMarkdown String?  @db.LongText
   isPinned        Boolean  @default(false)
+  startDate       DateTime?
+  dueDate         DateTime?
+  isAllDay        Boolean  @default(false)
+  eventId         Int?     @unique
+  categoryId      Int?
+  recurrenceRule  String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tasks Task[]
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event    Event?        @relation("NoteEvent", fields: [eventId], references: [id], onDelete: SetNull)
+  category ItemCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags     Tag[]
+  tasks    Task[]
 }
 
 model Task {
   id          Int       @id @default(autoincrement())
+  userId      Int
   noteId      Int?
   content     String
+  description String?   @db.LongText
   isCompleted Boolean   @default(false)
+  startDate   DateTime?
   dueDate     DateTime?
+  isAllDay    Boolean   @default(false)
+  eventId     Int?      @unique
+  categoryId  Int?
+  recurrenceRule String?
+  priority    Int       @default(0) // 0: Normal, 1: High, 2: Urgent
 
-  note Note? @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note     Note?         @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  event    Event?        @relation("TaskEvent", fields: [eventId], references: [id], onDelete: SetNull)
+  category ItemCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags     Tag[]
+  subtasks SubTask[]
+  activities TaskActivity[]
+}
+
+model SubTask {
+  id          Int     @id @default(autoincrement())
+  taskId      Int
+  content     String
+  isCompleted Boolean @default(false)
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
 model Category {
@@ -100,4 +154,14 @@ model Transaction {
 enum TransactionType {
   INCOME
   EXPENSE
+}
+
+model TaskActivity {
+  id        Int      @id @default(autoincrement())
+  taskId    Int
+  content   String   @db.Text
+  type      String   // 'SYSTEM' or 'COMMENT'
+  createdAt DateTime @default(now())
+
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }

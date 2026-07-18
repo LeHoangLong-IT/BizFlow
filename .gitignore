@@ -1,29 +1,61 @@
-.agents/
-Productivity_Management_System_(PMS)_plan
-Phân Quyền_Màn Hình
+# OS Files
+.DS_Store
+Thumbs.db
+*.swp
+*~
 
-# Standard ignores
+# Editor directories and files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+
+# Node modules & Logs
 node_modules/
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Env files
 .env
 .env.*
-.DS_Store
-*.log
-.vscode/
+!.env.example
 
-# Frontend
+# Coverage
+coverage/
+.nyc_output
+
+# Frontend (Next.js)
 frontend/.next/
 frontend/out/
 frontend/build/
+frontend/out.zip
+frontend/.eslintcache
 frontend/node_modules/
 
-# Backend
+# Backend (NestJS)
 backend/dist/
-backend/node_modules/
 backend/build/
+backend/.eslintcache
+backend/node_modules/
 backend/.env
+
+# Prisma
+backend/prisma/migrations/
+backend/prisma/*.db
+backend/prisma/*.db-journal
 
 # Deployments
 deploy_packages/
+.agents/
 !.agents/deploy/deploy.js
 
-frontend/out.zip
+# Project-specific files
+Productivity_Management_System_(PMS)_plan
+Phân Quyền_Màn Hình

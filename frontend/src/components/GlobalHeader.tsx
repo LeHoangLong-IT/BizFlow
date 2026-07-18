@@ -67,7 +67,7 @@ export default function GlobalHeader() {
 
   const navLinks = [
     { name: 'Lịch trình', path: '/calendar' },
-    { name: 'Công việc', path: '/tasks' },
+    { name: 'Ghi chú', path: '/notes' },
     { name: 'Tài chính', path: '/finance' },
   ];
 
@@ -96,7 +96,7 @@ export default function GlobalHeader() {
 
   return (
     <>
-      <header className="bg-[#1f3b6c] dark:bg-gray-950 text-white flex items-center justify-between px-4 md:px-6 py-3 shadow-md sticky top-0 z-40 transition-colors">
+      <header className="bg-[#1f3b6c] dark:bg-gray-950 text-white flex items-center justify-between px-4 md:px-6 py-3 shadow-md sticky top-0 z-50 transition-colors">
         
         {/* Left: Mobile Menu Icon & Logo */}
         <div className="flex items-center gap-3 md:gap-4">

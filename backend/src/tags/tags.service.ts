@@ -2,11 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
-export class EventCategoriesService {
+export class TagsService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: number, createDto: { name: string; color: string }) {
-    return this.prisma.itemCategory.create({
+    return this.prisma.tag.create({
       data: {
         userId,
         name: createDto.name,
@@ -16,35 +16,31 @@ export class EventCategoriesService {
   }
 
   async findAll(userId: number) {
-    return this.prisma.itemCategory.findMany({
+    return this.prisma.tag.findMany({
       where: { userId },
       orderBy: { id: 'asc' },
     });
   }
 
   async update(userId: number, id: number, updateDto: { name?: string; color?: string }) {
-    const category = await this.prisma.itemCategory.findFirst({
+    const tag = await this.prisma.tag.findFirst({
       where: { id, userId },
     });
-    if (!category) {
-      throw new NotFoundException('Event category not found');
-    }
+    if (!tag) throw new NotFoundException('Tag not found');
 
-    return this.prisma.itemCategory.update({
+    return this.prisma.tag.update({
       where: { id },
       data: updateDto,
     });
   }
 
   async remove(userId: number, id: number) {
-    const category = await this.prisma.itemCategory.findFirst({
+    const tag = await this.prisma.tag.findFirst({
       where: { id, userId },
     });
-    if (!category) {
-      throw new NotFoundException('Event category not found');
-    }
+    if (!tag) throw new NotFoundException('Tag not found');
 
-    return this.prisma.itemCategory.delete({
+    return this.prisma.tag.delete({
       where: { id },
     });
   }

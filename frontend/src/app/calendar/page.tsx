@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import moment from 'moment';
+import { rrulestr } from 'rrule';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import api from '@/lib/axios';
 import { Button, Spin, message } from 'antd';
@@ -38,13 +39,49 @@ export default function CalendarPage() {
   const fetchEvents = async () => {
     try {
       const res = await api.get('/events');
-      const formattedEvents = res.data.map((evt: any) => ({
-        ...evt,
-        start: new Date(evt.startTime),
-        end: new Date(evt.endTime),
-        allDay: evt.isAllDay,
-      }));
-      setEvents(formattedEvents);
+
+      const viewStart = dayjs(date).subtract(2, 'year').toDate();
+      const viewEnd = dayjs(date).add(2, 'year').toDate();
+
+      const expandedEvents: any[] = [];
+
+      res.data.forEach((evt: any) => {
+        if (evt.recurrenceRule) {
+          try {
+            const ruleString = evt.recurrenceRule.replace(/^RRULE:/, '');
+            const rule = rrulestr(`RRULE:${ruleString}`, { dtstart: new Date(evt.startTime) });
+            const occurrences = rule.between(viewStart, viewEnd, true);
+            const originalDuration = new Date(evt.endTime).getTime() - new Date(evt.startTime).getTime();
+
+            occurrences.forEach((occ: Date) => {
+              expandedEvents.push({
+                ...evt,
+                start: occ,
+                end: new Date(occ.getTime() + originalDuration),
+                allDay: evt.isAllDay,
+                isRecurringInstance: true
+              });
+            });
+          } catch (e) {
+            console.error("Lỗi parse RRULE:", e);
+            expandedEvents.push({
+              ...evt,
+              start: new Date(evt.startTime),
+              end: new Date(evt.endTime),
+              allDay: evt.isAllDay,
+            });
+          }
+        } else {
+          expandedEvents.push({
+            ...evt,
+            start: new Date(evt.startTime),
+            end: new Date(evt.endTime),
+            allDay: evt.isAllDay,
+          });
+        }
+      });
+
+      setEvents(expandedEvents);
     } catch (error) {
       message.error('Không thể tải dữ liệu lịch');
     } finally {
@@ -64,7 +101,7 @@ export default function CalendarPage() {
   useEffect(() => {
     fetchEvents();
     fetchCategories();
-  }, []);
+  }, [date]); // Refetch/expand when date changes heavily (though we expanded +/- 2 years)
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -246,7 +283,7 @@ export default function CalendarPage() {
 
                   return (
                     <div
-                      key={evt.id}
+                      key={`${evt.id}-${evt.start.getTime()}`}
                       className="group p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-500 shadow-sm hover:shadow-[0_4px_12px_-4px_rgba(59,89,152,0.15)] transition-all duration-200 cursor-pointer relative overflow-hidden flex flex-col gap-2"
                       onClick={() => handleSelectEvent(evt)}
                     >
@@ -287,9 +324,9 @@ export default function CalendarPage() {
           </div>
         </aside >
 
-        <main className="flex-1 bg-white dark:bg-gray-800 px-4 py-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col  xl:h-[calc(100vh-80px)] xl:max-h-[900px] overflow-hidden relative min-w-0 mb-10 xl:mb-0 max-w-full box-border">
+        <main className="flex-1 bg-white dark:bg-gray-800 px-4 py-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col xl:max-h-[900px] overflow-hidden relative min-w-0 mb-10 xl:mb-0 max-w-full box-border">
           <div className="flex-1 overflow-x-auto overflow-y-hidden h-full w-full min-w-0 flex flex-col">
-            <div className="w-full min-w-[800px] h-full min-h-[750px] xl:min-h-[650px] flex flex-col">
+            <div className="w-full min-w-[800px] h-full min-h-[750px] xl:min-h-[715px] flex flex-col">
               {loading ? (
                 <div className="flex-1 flex justify-center items-center"><Spin size="large" /></div>
               ) : (

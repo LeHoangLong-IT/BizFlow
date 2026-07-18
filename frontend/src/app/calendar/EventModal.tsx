@@ -46,10 +46,12 @@ export default function EventModal({ isOpen, onClose, eventData, onSuccess }: Ev
             startTime: isValidTime ? startDate : undefined,
             endTime: isValidTime ? endDate : undefined,
             categoryId: eventData.categoryId || null,
+            recurrenceRule: eventData.recurrenceRule || 'NONE',
           });
         } else {
           form.setFieldsValue({
-            categoryId: null
+            categoryId: null,
+            recurrenceRule: 'NONE'
           });
         }
       }, 0);
@@ -69,6 +71,7 @@ export default function EventModal({ isOpen, onClose, eventData, onSuccess }: Ev
         startTime: startDateTime,
         endTime: endDateTime,
         categoryId: values.categoryId,
+        recurrenceRule: values.recurrenceRule === 'NONE' ? null : values.recurrenceRule,
       };
 
       if (eventData?.id) {
@@ -96,7 +99,7 @@ export default function EventModal({ isOpen, onClose, eventData, onSuccess }: Ev
         onCancel={onClose}
         footer={null}
         closable={false}
-        width={480}
+        width={800}
         className="event-edit-modal"
         styles={{ body: { padding: 0 } }}
         destroyOnHidden
@@ -114,57 +117,80 @@ export default function EventModal({ isOpen, onClose, eventData, onSuccess }: Ev
         <div className="p-5 bg-white rounded-b-xl">
           <Form form={form} layout="vertical" onFinish={onFinish} requiredMark={false} className="mb-0">
 
-            <Form.Item label={<span className="font-semibold text-gray-700 text-[13px]">Loại sự kiện</span>}>
-              <div className="flex gap-2">
-                <Form.Item name="categoryId" noStyle>
-                  <Select size="large" className="rounded-md flex-1" placeholder="Chọn loại sự kiện (Không bắt buộc)" allowClear>
-                    {categories.map(type => (
-                      <Select.Option key={type.id} value={type.id}>
-                        <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: type.color }}></div>
-                          {type.name}
-                        </div>
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                <button
-                  type="button"
-                  onClick={() => setIsManageModalOpen(true)}
-                  className="h-[40px] px-3 bg-gray-50 border border-gray-200 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer outline-none"
-                >
-                  <SettingOutlined />
-                </button>
-              </div>
-            </Form.Item>
-
-            <Form.Item name="title" label={<span className="font-semibold text-gray-700 text-[13px]">Tên sự kiện</span>} rules={[{ required: true, message: 'Vui lòng nhập tên sự kiện' }]}>
-              <Input size="large" placeholder="Nhập tên sự kiện" className="rounded-md" />
-            </Form.Item>
-
-            <Form.Item name="dateRange" label={<span className="font-semibold text-gray-700 text-[13px]">Ngày diễn ra</span>} rules={[{ required: true, message: 'Vui lòng chọn ngày' }]}>
-              <DatePicker.RangePicker format="YYYY-MM-DD" separator="->" size="large" className="w-full rounded-md" placeholder={['Ngày bắt đầu', 'Ngày kết thúc']} />
-            </Form.Item>
-
-            <div className="flex gap-4">
-              <Form.Item name="startTime" label={<span className="font-semibold text-gray-700 text-[13px]">Giờ bắt đầu</span>} rules={[{ required: true, message: 'Vui lòng chọn giờ bắt đầu' }]} className="flex-1">
-                <TimePicker format="HH:mm" size="large" className="w-full rounded-md" placeholder="Giờ bắt đầu" />
+            <div className="flex flex-col md:grid md:grid-cols-2 md:gap-x-8">
+              {/* 1. Tên sự kiện (Desktop: Trái 1, Mobile: 1) */}
+              <Form.Item name="title" label={<span className="font-semibold text-gray-700 text-[13px]">Tên sự kiện</span>} rules={[{ required: true, message: 'Vui lòng nhập tên sự kiện' }]} className="order-1 md:order-1">
+                <Input size="large" placeholder="Nhập tên sự kiện" className="rounded-md" />
               </Form.Item>
 
-              <Form.Item name="endTime" label={<span className="font-semibold text-gray-700 text-[13px]">Giờ kết thúc</span>} rules={[{ required: true, message: 'Vui lòng chọn giờ kết thúc' }]} className="flex-1">
-                <TimePicker format="HH:mm" size="large" className="w-full rounded-md" placeholder="Giờ kết thúc" />
+              {/* 2. Loại sự kiện (Desktop: Phải 1, Mobile: 2) */}
+              <Form.Item label={<span className="font-semibold text-gray-700 text-[13px]">Loại sự kiện</span>} className="order-2 md:order-2">
+                <div className="flex gap-2">
+                  <Form.Item name="categoryId" noStyle>
+                    <Select size="large" className="rounded-md flex-1" placeholder="Chọn loại sự kiện (Không bắt buộc)" allowClear>
+                      {categories.map(type => (
+                        <Select.Option key={type.id} value={type.id}>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: type.color }}></div>
+                            {type.name}
+                          </div>
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  <button
+                    type="button"
+                    onClick={() => setIsManageModalOpen(true)}
+                    className="h-[40px] px-3 bg-gray-50 border border-gray-200 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer outline-none"
+                  >
+                    <SettingOutlined />
+                  </button>
+                </div>
+              </Form.Item>
+
+              {/* 3. Ngày diễn ra (Desktop: Trái 2, Mobile: 3) */}
+              <Form.Item name="dateRange" label={<span className="font-semibold text-gray-700 text-[13px]">Ngày diễn ra</span>} rules={[{ required: true, message: 'Vui lòng chọn ngày' }]} className="order-3 md:order-3">
+                <DatePicker.RangePicker format="YYYY-MM-DD" separator="->" size="large" className="w-full rounded-md" placeholder={['Ngày bắt đầu', 'Ngày kết thúc']} />
+              </Form.Item>
+
+              {/* 4. Địa điểm (Desktop: Phải 2, Mobile: 6) */}
+              <Form.Item name="location" label={<span className="font-semibold text-gray-700 text-[13px]">Địa điểm</span>} className="order-6 md:order-4">
+                <Input size="large" placeholder="Nhập địa điểm" className="rounded-md" />
+              </Form.Item>
+
+              {/* 5. Giờ bắt đầu / kết thúc (Desktop: Trái 3, Mobile: 4) */}
+              <div className="flex gap-4 order-4 md:order-5">
+                <Form.Item name="startTime" label={<span className="font-semibold text-gray-700 text-[13px]">Giờ bắt đầu</span>} rules={[{ required: true, message: 'Vui lòng chọn giờ bắt đầu' }]} className="flex-1">
+                  <TimePicker format="HH:mm" size="large" className="w-full rounded-md" placeholder="Giờ bắt đầu" />
+                </Form.Item>
+
+                <Form.Item name="endTime" label={<span className="font-semibold text-gray-700 text-[13px]">Giờ kết thúc</span>} rules={[{ required: true, message: 'Vui lòng chọn giờ kết thúc' }]} className="flex-1">
+                  <TimePicker format="HH:mm" size="large" className="w-full rounded-md" placeholder="Giờ kết thúc" />
+                </Form.Item>
+              </div>
+
+              {/* 6. Mô tả (Desktop: Phải 3, Mobile: 7) */}
+              <Form.Item name="description" label={<span className="font-semibold text-gray-700 text-[13px]">Mô tả</span>} className="order-7 md:order-6 md:row-span-2 mb-0">
+                <Input.TextArea rows={5} placeholder="Nhập mô tả chi tiết" className="rounded-md resize-none" style={{ padding: "10px" }} />
+              </Form.Item>
+
+              {/* 7. Lặp lại định kỳ (Desktop: Trái 4, Mobile: 5) */}
+              <Form.Item name="recurrenceRule" label={<span className="font-semibold text-gray-700 text-[13px]">Lặp lại định kỳ</span>} className="order-5 md:order-7">
+                <Select
+                  size="large"
+                  className="w-full rounded-md"
+                  options={[
+                    { value: 'NONE', label: 'Không bao giờ' },
+                    { value: 'FREQ=DAILY', label: 'Hằng ngày' },
+                    { value: 'FREQ=WEEKLY', label: 'Hằng tuần' },
+                    { value: 'FREQ=MONTHLY', label: 'Hằng tháng' },
+                    { value: 'FREQ=YEARLY', label: 'Hằng năm' },
+                  ]}
+                />
               </Form.Item>
             </div>
 
-            <Form.Item name="location" label={<span className="font-semibold text-gray-700 text-[13px]">Địa điểm</span>}>
-              <Input size="large" placeholder="Nhập địa điểm" className="rounded-md" />
-            </Form.Item>
-
-            <Form.Item name="description" label={<span className="font-semibold text-gray-700 text-[13px]">Mô tả</span>}>
-              <Input.TextArea rows={3} placeholder="Nhập mô tả" className="rounded-md resize-none" />
-            </Form.Item>
-
-            <div className="flex justify-end gap-3 border-t border-gray-100 pt-4 mt-2">
+            <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
               <button
                 type="button"
                 onClick={onClose}
