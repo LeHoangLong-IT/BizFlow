@@ -32,6 +32,7 @@ export const metadata: Metadata = {
 
 import GlobalHeader from "@/components/GlobalHeader";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import EventNotifier from "@/components/EventNotifier";
 
 export default function RootLayout({
   children,
@@ -47,6 +48,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <GlobalHeader />
+          <EventNotifier />
           {children}
         </ThemeProvider>
       </body>

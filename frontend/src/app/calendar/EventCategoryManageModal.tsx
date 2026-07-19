@@ -1,8 +1,9 @@
 'use client';
-import { Modal, Form, Input, Button, Popconfirm, message, ColorPicker, Tooltip } from 'antd';
+import { Modal, Button, Popconfirm, message, Input } from 'antd';
 import { useEffect, useState } from 'react';
-import { DeleteOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import api from '@/lib/axios';
+import EventCategoryEditModal from './EventCategoryEditModal';
 
 interface EventCategoryManageModalProps {
   isOpen: boolean;
@@ -12,8 +13,9 @@ interface EventCategoryManageModalProps {
 export default function EventCategoryManageModal({ isOpen, onClose }: EventCategoryManageModalProps) {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm();
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [searchText, setSearchText] = useState('');
 
   const fetchCategories = async () => {
     try {
@@ -30,32 +32,10 @@ export default function EventCategoryManageModal({ isOpen, onClose }: EventCateg
   useEffect(() => {
     if (isOpen) {
       fetchCategories();
-      form.resetFields();
-      setEditingId(null);
     }
-  }, [isOpen, form]);
+  }, [isOpen]);
 
-  const onFinish = async (values: any) => {
-    try {
-      const payload = {
-        name: values.name,
-        color: typeof values.color === 'string' ? values.color : values.color.toHexString(),
-      };
 
-      if (editingId) {
-        await api.patch(`/event-categories/${editingId}`, payload);
-        message.success('Cập nhật thành công');
-      } else {
-        await api.post('/event-categories', payload);
-        message.success('Thêm mới thành công');
-      }
-      form.resetFields();
-      setEditingId(null);
-      fetchCategories();
-    } catch (error) {
-      message.error('Có lỗi xảy ra');
-    }
-  };
 
   const handleDelete = async (id: number) => {
     try {
@@ -68,16 +48,8 @@ export default function EventCategoryManageModal({ isOpen, onClose }: EventCateg
   };
 
   const handleEdit = (category: any) => {
-    setEditingId(category.id);
-    form.setFieldsValue({
-      name: category.name,
-      color: category.color,
-    });
-  };
-
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    form.resetFields();
+    setEditingCategory(category);
+    setIsEditModalOpen(true);
   };
 
   return (
@@ -101,52 +73,34 @@ export default function EventCategoryManageModal({ isOpen, onClose }: EventCateg
         </button>
       </div>
 
-      <div className="p-5 bg-white rounded-b-xl">
-        <div className="mb-5">
-          <Form form={form} onFinish={onFinish} className="flex w-full gap-2 items-start">
-            <div className="flex-1 min-w-0">
-              <Form.Item name="name" rules={[{ required: true, message: 'Nhập tên' }]} className="m-0" style={{ width: '100%' }}>
-                <Input 
-                  placeholder="Tên loại sự kiện..." 
-                  className="w-full" 
-                  suffix={
-                    <Tooltip title="Chọn màu cho loại sự kiện">
-                      <Form.Item name="color" initialValue="#3b5998" noStyle>
-                        <ColorPicker size="small" className="border !border-gray-400 rounded" />
-                      </Form.Item>
-                    </Tooltip>
-                  }
-                />
-              </Form.Item>
-            </div>
-            <Form.Item className="m-0 flex-shrink-0">
-              <Button type="primary" htmlType="submit" className="bg-[#1677ff]">
-                {editingId ? 'Cập nhật' : 'Thêm'}
-              </Button>
-            </Form.Item>
-            {editingId && (
-              <Form.Item className="m-0 flex-shrink-0">
-                <Button onClick={handleCancelEdit}>Hủy</Button>
-              </Form.Item>
-            )}
-          </Form>
+      <div className="p-0 bg-white rounded-b-xl flex flex-col max-h-[60vh]">
+        <div className="px-4 py-3 border-b border-gray-100">
+          <Input 
+            variant="borderless" 
+            placeholder="Tìm kiếm loại sự kiện..." 
+            value={searchText}
+            onChange={e => setSearchText(e.target.value)}
+            className="px-0 shadow-none focus:ring-0"
+            prefix={<SearchOutlined className="text-gray-400 mr-2" />}
+          />
         </div>
+
 
         {loading ? (
           <div className="text-center py-4 text-gray-500">Đang tải...</div>
         ) : (
-          <ul className="m-0 p-0 list-none border border-gray-100 rounded-md divide-y divide-gray-100 max-h-[300px] overflow-y-auto bg-[#f8f9fa]">
-            {categories.length === 0 ? (
-              <li className="p-4 text-center text-gray-400">Chưa có danh mục nào</li>
+          <ul className="m-0 p-0 list-none divide-y divide-gray-100 overflow-y-auto custom-scrollbar flex-1">
+            {categories.filter(c => c.name.toLowerCase().includes(searchText.toLowerCase())).length === 0 ? (
+              <li className="p-4 text-center text-gray-400">Không tìm thấy loại sự kiện nào</li>
             ) : (
-              categories.map((item) => (
-                <li key={item.id} className="p-3 flex justify-between items-center hover:bg-gray-50 transition-colors">
+              categories.filter(c => c.name.toLowerCase().includes(searchText.toLowerCase())).map((item) => (
+                <li key={item.id} className="p-3 px-5 flex justify-between items-center hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-3">
                     <div className="w-4 h-4 rounded-full" style={{ backgroundColor: item.color }} />
                     <span className="text-gray-700 font-medium">{item.name}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Button type="text" icon={<EditOutlined />} onClick={() => handleEdit(item)} />
+                    <Button type="text" icon={<EditOutlined className="text-gray-400 hover:text-gray-600" />} onClick={() => handleEdit(item)} size="small" />
                     <Popconfirm
                       title="Xóa loại sự kiện?"
                       description="Các sự kiện thuộc loại này sẽ trở thành Không phân loại."
@@ -154,7 +108,7 @@ export default function EventCategoryManageModal({ isOpen, onClose }: EventCateg
                       okText="Xóa"
                       cancelText="Hủy"
                     >
-                      <Button type="text" danger icon={<DeleteOutlined />} />
+                      <Button type="text" danger icon={<DeleteOutlined className="text-red-400 hover:text-red-600" />} size="small" />
                     </Popconfirm>
                   </div>
                 </li>
@@ -162,7 +116,26 @@ export default function EventCategoryManageModal({ isOpen, onClose }: EventCateg
             )}
           </ul>
         )}
+        
+        <div className="p-4 border-t border-gray-100 mt-auto">
+          <Button
+            className="w-full rounded-md font-medium text-gray-600 hover:text-blue-600 border-gray-200 hover:border-blue-400 transition-colors"
+            onClick={() => {
+              setEditingCategory(null);
+              setIsEditModalOpen(true);
+            }}
+          >
+            Tạo loại sự kiện mới
+          </Button>
+        </div>
       </div>
+
+      <EventCategoryEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        categoryData={editingCategory}
+        onSuccess={fetchCategories}
+      />
     </Modal>
   );
 }

@@ -33,6 +33,8 @@ export default function NotesPage() {
   const [editingTag, setEditingTag] = useState<any>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isTaskPopoverOpen, setIsTaskPopoverOpen] = useState(false);
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [noteToDelete, setNoteToDelete] = useState<number | null>(null);
 
   useEffect(() => {
@@ -179,8 +181,8 @@ export default function NotesPage() {
     }
   };
 
-  const handleCreateTaskForNote = async (e: any) => {
-    e.preventDefault();
+  const handleCreateTaskForNote = async (e?: any) => {
+    if (e && e.preventDefault) e.preventDefault();
     if (!newTaskInput.trim() || !selectedNote) return;
     try {
       const res = await api.post('/tasks', {
@@ -192,7 +194,9 @@ export default function NotesPage() {
       const updatedNote = { ...selectedNote, tasks: [...(selectedNote.tasks || []), newTask] };
       setSelectedNote(updatedNote);
       setNotes(notes.map(n => n.id === updatedNote.id ? updatedNote : n));
-      setNewTaskInput('');
+      setNewTaskInput('Việc cần làm');
+      setIsTaskPopoverOpen(false);
+      setIsTaskModalOpen(false);
     } catch (error) {
       message.error('Lỗi khi thêm công việc');
     }
@@ -351,6 +355,30 @@ export default function NotesPage() {
       />
     );
   };
+
+  const renderTaskInputContent = () => (
+    <div className="w-64 sm:w-72 flex flex-col">
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100">
+        <Button type="text" icon={<LeftOutlined />} size="small" onClick={() => { setIsTaskPopoverOpen(false); setIsTaskModalOpen(false); }} className="text-gray-500" />
+        <span className="font-semibold text-gray-700">Thêm danh sách công việc</span>
+        <Button type="text" icon={<CloseOutlined />} size="small" onClick={() => { setIsTaskPopoverOpen(false); setIsTaskModalOpen(false); }} className="text-gray-500" />
+      </div>
+      <div>
+        <div className="mb-1 text-xs font-semibold text-gray-600">Tiêu đề</div>
+        <Input
+          value={newTaskInput}
+          onChange={(e) => setNewTaskInput(e.target.value)}
+          onPressEnter={handleCreateTaskForNote}
+          autoFocus
+          className="mb-3 text-[14px]"
+        />
+        <Button type="primary" className="w-full font-medium mt-4" onClick={handleCreateTaskForNote}>
+          Thêm
+        </Button>
+      </div>
+    </div>
+  );
+
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f3f3f9] dark:bg-gray-900 w-full min-w-0">
@@ -581,11 +609,11 @@ export default function NotesPage() {
                     trigger={['click']}
                     menu={{
                       items: [
-                        { key: 'tag', icon: <TagOutlined />, label: 'Nhãn' },
-                        { key: 'date', icon: <ClockCircleOutlined />, label: 'Ngày' },
-                        { key: 'todo', icon: <CheckSquareOutlined />, label: 'Việc cần làm' },
-                        { key: 'attach', icon: <PaperClipOutlined />, label: 'Đính kèm' },
-                        { key: 'custom', icon: <ControlOutlined />, label: 'Trường tùy chỉnh' },
+                        { key: 'tag', icon: <TagOutlined />, label: 'Nhãn', onClick: () => setIsTagPopoverOpen(true) },
+                        { key: 'date', icon: <ClockCircleOutlined />, label: 'Ngày', onClick: () => setIsDatePickerOpen(true) },
+                        { key: 'todo', icon: <CheckSquareOutlined />, label: 'Việc cần làm', onClick: () => { setNewTaskInput('Việc cần làm'); isMobile ? setIsTaskModalOpen(true) : setIsTaskPopoverOpen(true); } },
+                        { key: 'attach', icon: <PaperClipOutlined />, label: 'Đính kèm', onClick: () => message.info('Tính năng đính kèm đang phát triển') },
+                        { key: 'custom', icon: <ControlOutlined />, label: 'Trường tùy chỉnh', onClick: () => message.info('Tính năng trường tùy chỉnh đang phát triển') },
                       ]
                     }}
                   >
@@ -630,7 +658,7 @@ export default function NotesPage() {
                         }}
                         placement="bottomLeft"
                         zIndex={40}
-                        styles={{ body: { padding: 0, borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' } }}
+                        styles={{ container: { padding: 0, borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' } }}
                       >
                         <Button icon={<TagOutlined />} className="text-gray-600 border-gray-200 font-medium">
                           Nhãn
@@ -638,6 +666,26 @@ export default function NotesPage() {
                       </Popover>
                     )
                   )}
+
+                  {isMobile ? (
+                    <Button icon={<CheckSquareOutlined />} className="bg-[#4a5568] text-white border-none font-medium hover:!bg-[#3a4558] hover:!text-white" onClick={() => { setNewTaskInput('Việc cần làm'); setIsTaskModalOpen(true); }}>
+                      Việc cần làm
+                    </Button>
+                  ) : (
+                    <Popover
+                      content={renderTaskInputContent()}
+                      trigger="click"
+                      open={isTaskPopoverOpen}
+                      onOpenChange={setIsTaskPopoverOpen}
+                      placement="bottomLeft"
+                      zIndex={40}
+                    >
+                      <Button icon={<CheckSquareOutlined />} className="bg-[#4a5568] text-white border-none font-medium hover:!bg-[#3a4558] hover:!text-white" onClick={() => setNewTaskInput('Việc cần làm')}>
+                        Việc cần làm
+                      </Button>
+                    </Popover>
+                  )}
+
 
                   {(!selectedNote.startDate && !selectedNote.dueDate) && (
                     isMobile ? (
@@ -658,13 +706,6 @@ export default function NotesPage() {
                       </Popover>
                     )
                   )}
-
-                  <Button icon={<CheckSquareOutlined />} className="text-gray-600 border-gray-200" onClick={() => {
-                    const input = document.getElementById('new-task-input');
-                    if (input) input.focus();
-                  }}>
-                    Việc cần làm
-                  </Button>
                 </div>
 
                 {/* Summary Blocks */}
@@ -730,7 +771,7 @@ export default function NotesPage() {
                               }}
                               placement="bottomLeft"
                               zIndex={40}
-                              styles={{ body: { padding: 0, borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' } }}
+                              styles={{ container: { padding: 0, borderRadius: '12px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' } }}
                             >
                               <Button className="w-11 h-8 p-0 flex items-center justify-center rounded-md border border-gray-200 text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition-colors shadow-sm">
                                 <PlusOutlined className="text-lg" />
@@ -895,16 +936,6 @@ export default function NotesPage() {
                       />
                     ))}
                   </div>
-
-                  <form onSubmit={handleCreateTaskForNote} className="mt-4">
-                    <Input
-                      size="large"
-                      placeholder="+ Thêm công việc mới..."
-                      value={newTaskInput}
-                      onChange={e => setNewTaskInput(e.target.value)}
-                      className="dark:bg-gray-700 dark:text-white dark:border-gray-600 shadow-sm"
-                    />
-                  </form>
                 </div>
 
               </div>
@@ -954,6 +985,19 @@ export default function NotesPage() {
       />
 
       <Modal
+        open={isMobile && isTaskModalOpen}
+        onCancel={() => setIsTaskModalOpen(false)}
+        footer={null}
+        closable={false}
+        centered
+        width={350}
+        styles={{ body: { padding: 16 } }}
+        zIndex={1000}
+      >
+        {renderTaskInputContent()}
+      </Modal>
+
+      <Modal
         open={isDeleteModalOpen}
         onCancel={() => setIsDeleteModalOpen(false)}
         footer={null}
@@ -962,10 +1006,9 @@ export default function NotesPage() {
         width={400}
         styles={{
           body: { padding: 0 },
-          content: { borderRadius: '16px', overflow: 'hidden', padding: 0, border: '1px solid rgba(255, 255, 255, 0.2)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }
         }}
         modalRender={(node) => (
-          <div className="rounded-[16px] overflow-hidden bg-white dark:bg-gray-800">
+          <div className="rounded-[16px] overflow-hidden bg-white dark:bg-gray-800 border border-white/20 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] p-0">
             {node}
           </div>
         )}
